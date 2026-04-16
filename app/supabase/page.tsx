@@ -1,23 +1,32 @@
 "use client";
+import { useQuery } from "@tanstack/react-query";
+import { getTransactions } from "@/lib/transactions";
+import TransactionForm from "../features/transactions/components/TransactionForm";
+import TransactionCard from "../features/transactions/components/TransectionCard";
 
-import { useEffect } from "react";
-import { createClient } from "@/utils/supabase/client";
+export default function Home() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["transactions"],
+    queryFn: getTransactions,
+  });
 
-export default function TestPage() {
-  useEffect(() => {
-    const fetchData = async () => {
-      const supabase = createClient();
+  if (isLoading) return <p>Loading transactions...</p>;
+  if (error) return <p>Failed to load transactions</p>;
+  if (!data?.length) return <p>No transactions yet</p>;
 
-      const { data, error } = await supabase
-        .from("transactions")
-        .select("*");
-
-      console.log("DATA:", data);
-      console.log("ERROR:", error);
-    };
-
-    fetchData();
-  }, []);
-
-  return <div>Check console</div>;
+  return (
+    <main>
+      <h1>Transactions</h1>
+      <TransactionForm />
+      {data.map((transaction) => (
+        <TransactionCard
+          id={transaction.id}
+          key={transaction.id}
+          note={transaction.note}
+          amount={transaction.amount}
+          type={transaction.type}
+        />
+      ))}
+    </main>
+  );
 }
