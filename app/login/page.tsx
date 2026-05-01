@@ -1,10 +1,10 @@
-"use client"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm } from "react-hook-form"
-import { toast } from "sonner"
-import * as z from "zod"
+"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,42 +12,41 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 
-import {authSchema} from "@/schema/authSchema";
+import { authSchema } from "@/schema/authSchema";
 import { createClient } from "@/utils/supabase/client";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 export default function Login() {
-    const router = useRouter()
+  const router = useRouter();
   const form = useForm<z.infer<typeof authSchema>>({
     resolver: zodResolver(authSchema),
     defaultValues: {
       email: "",
       password: "",
     },
-  })
+  });
 
-  async function onSubmit(data: z.infer<typeof authSchema>) {;
-        const supabase = createClient();
+  async function onSubmit(data: z.infer<typeof authSchema>) {
+    const supabase = createClient();
 
-   const { data:signinData, error } = await supabase.auth.signInWithPassword({
-  email: data.email,
-  password: data.password,
-})
+    const { data: signinData, error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
     if (error) {
       toast.error(error?.message || "Error logging in!");
     } else {
       toast.success("Login successful!");
-     router.replace('/dashboard');
-      console.log(signinData, "login response data");
+      router.replace("/dashboard");
     }
     form.reset();
   }
@@ -57,7 +56,7 @@ export default function Login() {
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>
-            Enter your email and password to sign in to your account.
+          Enter your email and password to sign in to your account.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -68,9 +67,7 @@ export default function Login() {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-email">
-                    Email
-                  </FieldLabel>
+                  <FieldLabel htmlFor="form-rhf-demo-email">Email</FieldLabel>
                   <Input
                     {...field}
                     id="form-rhf-demo-email"
@@ -118,5 +115,5 @@ export default function Login() {
         </Field>
       </CardFooter>
     </Card>
-  )
+  );
 }

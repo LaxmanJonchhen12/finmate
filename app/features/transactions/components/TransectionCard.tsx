@@ -1,25 +1,32 @@
+import { Button } from "@/components/ui/button";
 import { useDeleteTransaction } from "../hooks/useDeleteTransection";
 import DeleteTransactionDailog from "./DeleteTransactionDailog";
+import { Transaction } from "../types/transaction.types";
+
+type TransactionCardProps = {
+  transaction: Transaction;
+  onEdit: (transaction: Transaction) => void;
+};
+
 export default function TransactionCard({
-  id,
-  note,
-  amount,
-  type,
-}: {
-  id: string;
-  note: string;
-  amount: number;
-  type: "income" | "expense";
-}) {
-  const { mutate, isPending } = useDeleteTransaction();
+  transaction,
+  onEdit,
+}: TransactionCardProps) {
+  const { mutate } = useDeleteTransaction();
+
   const handleDelete = () => {
-    mutate(id);
+    if (transaction.id) {
+      mutate(transaction.id);
+    }
   };
+
   return (
     <div className="">
-      <p>{note}</p>
-      <p>{amount}</p>
-      <p>{type}</p>
+      <p>{transaction.note}</p>
+      <p>{transaction.amount}</p>
+      <p>{transaction.type}</p>
+
+      <Button onClick={() => onEdit(transaction)}>Edit</Button>
       <DeleteTransactionDailog onDelete={handleDelete} />
     </div>
   );

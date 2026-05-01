@@ -1,4 +1,5 @@
 "use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
@@ -20,7 +21,6 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import {
   Select,
@@ -46,28 +46,70 @@ import {
 } from "@/components/ui/popover";
 import { useCreateTransaction } from "../hooks/useCreateTransaction";
 import { useAuth } from "../../auth/hooks/useAuth";
+import { Transaction } from "../types/transaction.types";
+import { useEditTransaction } from "../hooks/useEditTransaction";
 
-export default function TransactionForm() {
-  // ✅ Controlled so we can close programmatically on success
-  const [sheetOpen, setSheetOpen] = useState(false);
+export type TransactionFormProps = {
+  openTransactionForm?: boolean;
+  setOpenTransactionForm?: (open: boolean) => void;
+  transactionToEdit?: Transaction | null;
+  setTransactionToEdit?: (transaction: Transaction | null) => void;
+};
+
+const defaultValues = {
+  amount: 0,
+  note: "",
+  date: new Date(),
+  type: "INCOME" as const,
+  category: "",
+};
+
+export default function TransactionForm({
+  openTransactionForm,
+  setOpenTransactionForm,
+  transactionToEdit,
+  setTransactionToEdit,
+}: TransactionFormProps) {
   const [calendarOpen, setCalendarOpen] = useState(false);
 
   const form = useForm<z.infer<typeof transactionSchema>>({
     resolver: zodResolver(transactionSchema),
-    defaultValues: {
-      amount: 0,
-      note: "",
-      date: new Date(),
-      type: "INCOME",
-      category: "",
-    },
+    defaultValues,
   });
 
   const type = useWatch({ control: form.control, name: "type" });
   const isExpense = type === "EXPENSE";
 
-  const { mutate, isPending } = useCreateTransaction();
+  const { mutate: createTransaction, isPending } = useCreateTransaction();
+  const { mutate: editTransaction, isPending: isPendingEdit } =
+    useEditTransaction();
   const { data: user } = useAuth();
+
+  useEffect(() => {
+    if (!openTransactionForm) {
+      form.reset(defaultValues);
+      return;
+    }
+
+    if (transactionToEdit) {
+      form.reset({
+        amount: transactionToEdit.amount,
+        note: transactionToEdit.note,
+        date: new Date(transactionToEdit.date),
+        type: transactionToEdit.type,
+        category: transactionToEdit.category,
+      });
+    } else {
+      form.reset(defaultValues);
+    }
+  }, [openTransactionForm, transactionToEdit]);
+
+  const closeForm = () => {
+    setOpenTransactionForm?.(false);
+    setTransactionToEdit?.(null);
+    setCalendarOpen(false);
+    form.reset(defaultValues);
+  };
 
   async function onSubmit(data: z.infer<typeof transactionSchema>) {
     try {
@@ -76,64 +118,88 @@ export default function TransactionForm() {
         return;
       }
 
-      const payload = {
-        ...data,
-        user_id: user.id,
-        created_at: new Date().toISOString(),
-        date: new Date(data.date).toISOString(),
+      const basePayload = {
+        amount: data.amount,
         note: data.note || "",
+        date: new Date(data.date).toISOString(),
+        type: data.type,
+        category: data.category,
       };
 
-      mutate(payload, {
-        onSuccess: () => {
-          toast.success("Transaction created successfully");
-          form.reset();
-          setSheetOpen(false); // ✅ close sheet on success
+      if (transactionToEdit) {
+        editTransaction(
+          {
+            id: transactionToEdit.id as string,
+            updates: basePayload,
+          },
+          {
+            onSuccess: () => {
+              toast.success("Transaction updated successfully");
+              closeForm();
+            },
+            onError: (error: Error) => {
+              toast.error(error.message || "Something went wrong");
+            },
+          },
+        );
+        return;
+      }
+
+      createTransaction(
+        {
+          ...basePayload,
+          user_id: user.id,
+          created_at: new Date().toISOString(),
         },
-        onError: (error: Error) => {
-          toast.error(error.message || "Something went wrong");
+        {
+          onSuccess: () => {
+            toast.success("Transaction created successfully");
+            closeForm();
+          },
+          onError: (error: Error) => {
+            toast.error(error.message || "Something went wrong");
+          },
         },
-      });
+      );
     } catch (error: unknown) {
       toast.error((error as Error).message);
     }
   }
 
-  useEffect(() => {
-    form.setValue("category", "");
-  }, [type, form]);
-
-  // ✅ Resets everything when sheet closes (via X, Escape, or success)
   function handleSheetOpenChange(open: boolean) {
-    setSheetOpen(open);
+    setOpenTransactionForm?.(open);
+
     if (!open) {
-      form.reset();
       setCalendarOpen(false);
+      closeForm();
     }
   }
 
+  const isSubmitButtonDisabled = isPending || isPendingEdit;
+
   return (
-    <Sheet open={sheetOpen} onOpenChange={handleSheetOpenChange}>
-      <SheetTrigger
-        render={<Button variant="outline">Add Transaction</Button>}
-      />
+    <Sheet open={openTransactionForm} onOpenChange={handleSheetOpenChange}>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Add Transaction</SheetTitle>
+          <SheetTitle>
+            {transactionToEdit ? "Edit Transaction" : "Add Transaction"}
+          </SheetTitle>
           <SheetDescription>
-            Fill in the details for the new transaction.
+            {transactionToEdit
+              ? "Update the transaction details."
+              : "Fill in the details for the new transaction."}
           </SheetDescription>
         </SheetHeader>
+
         <div className="grid flex-1 auto-rows-min gap-6 px-4">
           <form
             onSubmit={(e) => {
-              e.stopPropagation(); // ✅ prevents Sheet from swallowing the submit event
+              e.stopPropagation();
               form.handleSubmit(onSubmit)(e);
             }}
           >
             <div className="grid gap-3">
               <FieldGroup>
-                {/* Transaction Type */}
                 <Controller
                   name="type"
                   control={form.control}
@@ -143,9 +209,11 @@ export default function TransactionForm() {
                         Transaction Type
                       </FieldLabel>
                       <Select
-                        items={transactionOptions}
                         id="transaction-type"
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          form.setValue("category", "");
+                        }}
                         value={field.value}
                       >
                         <SelectTrigger className="w-full max-w-48">
@@ -169,7 +237,6 @@ export default function TransactionForm() {
                   )}
                 />
 
-                {/* Amount */}
                 <Controller
                   name="amount"
                   control={form.control}
@@ -183,8 +250,11 @@ export default function TransactionForm() {
                         placeholder="0.00"
                         type="number"
                         min={0}
-                        // ✅ number inputs return strings — coerce to number for Zod
-                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value ? e.target.valueAsNumber : 0,
+                          )
+                        }
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
@@ -193,7 +263,6 @@ export default function TransactionForm() {
                   )}
                 />
 
-                {/* Note */}
                 <Controller
                   name="note"
                   control={form.control}
@@ -214,7 +283,6 @@ export default function TransactionForm() {
                   )}
                 />
 
-                {/* Date */}
                 <Controller
                   name="date"
                   control={form.control}
@@ -270,7 +338,6 @@ export default function TransactionForm() {
                   )}
                 />
 
-                {/* Category */}
                 <Controller
                   name="category"
                   control={form.control}
@@ -278,11 +345,6 @@ export default function TransactionForm() {
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor="category">Category</FieldLabel>
                       <Select
-                        items={
-                          isExpense
-                            ? expenseCategoryOptions
-                            : incomeCategoryOptions
-                        }
                         id="category"
                         onValueChange={field.onChange}
                         value={field.value}
@@ -293,17 +355,14 @@ export default function TransactionForm() {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Category</SelectLabel>
-                            {isExpense
-                              ? expenseCategoryOptions.map((opt) => (
-                                  <SelectItem key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                  </SelectItem>
-                                ))
-                              : incomeCategoryOptions.map((opt) => (
-                                  <SelectItem key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                  </SelectItem>
-                                ))}
+                            {(isExpense
+                              ? expenseCategoryOptions
+                              : incomeCategoryOptions
+                            ).map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -315,9 +374,10 @@ export default function TransactionForm() {
                 />
               </FieldGroup>
             </div>
+
             <SheetFooter>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? "Saving..." : "Save changes"}
+              <Button type="submit" disabled={isSubmitButtonDisabled}>
+                {isPending || isPendingEdit ? "Saving..." : "Save changes"}
               </Button>
               <SheetClose render={<Button variant="outline">Close</Button>} />
             </SheetFooter>
