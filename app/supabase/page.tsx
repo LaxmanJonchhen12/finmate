@@ -7,15 +7,27 @@ import TransactionCard from "../features/transactions/components/TransectionCard
 import { useState } from "react";
 import { Transaction } from "../features/transactions/types/transaction.types";
 import { Button } from "@/components/ui/button";
+import { FieldLabel } from "@/components/ui/field";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Home() {
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
+  const [filter, setFilter] = useState("");
+  console.log(filter, "filter");
   const [openTransactionForm, setOpenTransactionForm] = useState(false);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["transactions"],
-    queryFn: getTransactions,
+    queryKey: ["transactions", filter],
+    queryFn: () => getTransactions(filter),
   });
 
   const handleCreate = () => {
@@ -43,6 +55,24 @@ export default function Home() {
 
       {isLoading && <p>Loading transactions...</p>}
       {error && <p>Failed to load transactions</p>}
+
+      <FieldLabel>Transacton Type</FieldLabel>
+
+      <Select
+        onValueChange={(value) => {
+          setFilter(value as string);
+        }}
+      >
+        <SelectTrigger className="w-full max-w-48">
+          <SelectValue placeholder="Select a Transaction Type" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="INCOME">Income</SelectItem>
+            <SelectItem value="EXPENSE">Expense</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
 
       {!isLoading && !error && (
         <>

@@ -31,11 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  expenseCategoryOptions,
-  incomeCategoryOptions,
-  transactionOptions,
-} from "../constants";
+import { transactionOptions } from "../constants";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
@@ -48,6 +44,7 @@ import { useCreateTransaction } from "../hooks/useCreateTransaction";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { Transaction } from "../types/transaction.types";
 import { useEditTransaction } from "../hooks/useEditTransaction";
+import { useGetCategories } from "../../category/hooks/useGetCategories";
 
 export type TransactionFormProps = {
   openTransactionForm?: boolean;
@@ -61,7 +58,7 @@ const defaultValues = {
   note: "",
   date: new Date(),
   type: "INCOME" as const,
-  category: "",
+  category_id: 0,
 };
 
 export default function TransactionForm({
@@ -72,6 +69,25 @@ export default function TransactionForm({
 }: TransactionFormProps) {
   const [calendarOpen, setCalendarOpen] = useState(false);
 
+  const { data: categories, isLoading: isLoadingCategories } =
+    useGetCategories();
+  const incomeCategoryOptions = categories
+    ? categories
+        .filter((cat) => cat.type === "INCOME")
+        .map((cat) => ({
+          value: cat.id,
+          label: cat.name,
+          id: cat.id,
+          type: cat.type,
+        }))
+    : [];
+
+  const expenseCategoryOptions = categories
+    ? categories
+        .filter((cat) => cat.type === "EXPENSE")
+        .map((cat) => ({ value: cat.id, label: cat.name, id: cat.id }))
+    : [];
+
   const form = useForm<z.infer<typeof transactionSchema>>({
     resolver: zodResolver(transactionSchema),
     defaultValues,
@@ -79,6 +95,11 @@ export default function TransactionForm({
 
   const type = useWatch({ control: form.control, name: "type" });
   const isExpense = type === "EXPENSE";
+
+  const firstCategoryId =
+    !isLoadingCategories && isExpense
+      ? expenseCategoryOptions[0]?.value
+      : incomeCategoryOptions[0]?.value;
 
   const { mutate: createTransaction, isPending } = useCreateTransaction();
   const { mutate: editTransaction, isPending: isPendingEdit } =
@@ -97,7 +118,7 @@ export default function TransactionForm({
         note: transactionToEdit.note,
         date: new Date(transactionToEdit.date),
         type: transactionToEdit.type,
-        category: transactionToEdit.category,
+        category_id: transactionToEdit.category_id,
       });
     } else {
       form.reset(defaultValues);
@@ -123,7 +144,7 @@ export default function TransactionForm({
         note: data.note || "",
         date: new Date(data.date).toISOString(),
         type: data.type,
-        category: data.category,
+        category_id: data.category_id,
       };
 
       if (transactionToEdit) {
@@ -212,7 +233,7 @@ export default function TransactionForm({
                         id="transaction-type"
                         onValueChange={(value) => {
                           field.onChange(value);
-                          form.setValue("category", "");
+                          form.setValue("category_id", 0);
                         }}
                         value={field.value}
                       >
@@ -223,7 +244,10 @@ export default function TransactionForm({
                           <SelectGroup>
                             <SelectLabel>Transaction Type</SelectLabel>
                             {transactionOptions.map((opt) => (
-                              <SelectItem key={opt.value} value={opt.value}>
+                              <SelectItem
+                                key={opt.value}
+                                value={String(opt.value)}
+                              >
                                 {opt.label}
                               </SelectItem>
                             ))}
@@ -339,7 +363,7 @@ export default function TransactionForm({
                 />
 
                 <Controller
-                  name="category"
+                  name="category_id"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
@@ -355,11 +379,16 @@ export default function TransactionForm({
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Category</SelectLabel>
+                            {categories?.length === 0 && (
+                              <SelectItem value="" disabled>
+                                No categories available
+                              </SelectItem>
+                            )}
                             {(isExpense
                               ? expenseCategoryOptions
                               : incomeCategoryOptions
                             ).map((opt) => (
-                              <SelectItem key={opt.value} value={opt.value}>
+                              <SelectItem key={opt.id} value={opt.value}>
                                 {opt.label}
                               </SelectItem>
                             ))}

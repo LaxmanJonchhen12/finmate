@@ -8,5 +8,5 @@ export const transactionSchema = z.object({
       message: "Type must be either 'INCOME' or 'Expense'.",
     }),
   }),
-  category: z.string().min(1, "Category is required"),
+  category_id: z.coerce.number().min(1, "Please select a category."),
 });

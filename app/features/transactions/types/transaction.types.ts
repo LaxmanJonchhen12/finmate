@@ -7,6 +7,6 @@ export type Transaction = {
   note: string;
   date: string;
   type: TransactionType;
-  category: string;
+  category_id: number;
   created_at: string;
 };
