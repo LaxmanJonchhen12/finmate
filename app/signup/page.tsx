@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -25,9 +24,10 @@ import { Input } from "@/components/ui/input"
 
 import {authSchema} from "@/schema/authSchema";
 import { createClient } from "@/utils/supabase/client";
-import router from "next/router"
+import { useRouter } from "next/navigation";
 
-export default function Singup() {
+export default function Signup() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof authSchema>>({
     resolver: zodResolver(authSchema),
     defaultValues: {
@@ -58,7 +58,7 @@ export default function Singup() {
       <CardHeader>
         <CardTitle>Sign Up</CardTitle>
         <CardDescription>
-            Enter your email and password to signup.
+            Enter your email and password to sign up.
         </CardDescription>
       </CardHeader>
       <CardContent>

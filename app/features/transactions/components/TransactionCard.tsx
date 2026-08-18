@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { useDeleteTransaction } from "../hooks/useDeleteTransection";
-import DeleteTransactionDailog from "./DeleteTransactionDailog";
+import { useDeleteTransaction } from "../hooks/useDeleteTransaction";
 import { Transaction } from "../types/transaction.types";
+import DeleteTransactionDialog from "./DeleteTransactionDialog";
 
 type TransactionCardProps = {
   transaction: Transaction;
@@ -27,7 +27,7 @@ export default function TransactionCard({
       <p>{transaction.type}</p>
 
       <Button onClick={() => onEdit(transaction)}>Edit</Button>
-      <DeleteTransactionDailog onDelete={handleDelete} />
+      <DeleteTransactionDialog onDelete={handleDelete} />
     </div>
   );
 }

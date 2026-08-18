@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-export default function DeleteTransactionDailog({
+export default function DeleteTransactionDialog({
   onDelete,
 }: {
   onDelete: () => void;
@@ -25,11 +25,11 @@ export default function DeleteTransactionDailog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you absolutely sure want to delete this transaction?
+           Are you absolutely sure you want to delete this transaction?
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete your
-            account from our servers.
+            transaction.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
