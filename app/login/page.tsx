@@ -52,25 +52,29 @@ export default function Login() {
   }
 
   return (
-    <Card className="w-full sm:max-w-md">
-      <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>
-          Enter your email and password to sign in to your account.
+   <div className="flex items-center justify-center h-screen">
+     <Card className="w-full sm:max-w-md p-5">
+      <CardHeader className="p-0">
+        <CardTitle className="text-fm-slate-800 font-semibold text-2xl">Finmate</CardTitle>
+        <CardTitle className="text-fm-slate-900 font-semibold text-3xl">Signin</CardTitle>
+        <CardDescription className="text-fm-slate-600 text-base font-normal">
+          Access your financial insights.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
+      <CardContent className="p-0">
+        <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
               name="email"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-email">Email</FieldLabel>
+                  <FieldLabel htmlFor="login-form-email" className="text-fm-slate-600 text-sm">
+                    Email
+                  </FieldLabel>
                   <Input
                     {...field}
-                    id="form-rhf-demo-email"
+                    id="login-form-email"
                     aria-invalid={fieldState.invalid}
                     placeholder="you@example.com"
                     type="email"
@@ -87,14 +91,14 @@ export default function Login() {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-password">
+                  <FieldLabel htmlFor="login-form-password" className="text-fm-slate-600 text-sm">
                     Password
                   </FieldLabel>
                   <Input
                     {...field}
-                    id="form-rhf-demo-password"
+                    id="login-form-password"
                     aria-invalid={fieldState.invalid}
-                    placeholder="••••••••"
+                    placeholder="your password"
                     type="password"
                     autoComplete="current-password"
                   />
@@ -107,13 +111,15 @@ export default function Login() {
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter>
-        <Field orientation="horizontal">
-          <Button type="submit" form="form-rhf-demo">
-            Submit
+        <Field orientation="horizontal" className="flex items-center justify-center w-full">
+          <Button type="submit" form="login-form" className="w-full">
+            Signin
           </Button>
         </Field>
-      </CardFooter>
+        <p className="text-fm-slate-600 text-sm text-center">
+            Forgot Password?
+        </p>
     </Card>
+   </div>
   );
 }

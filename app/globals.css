@@ -4,41 +4,166 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * ============================================================
+ * FINMATE DESIGN SYSTEM
+ * ============================================================
+ *
+ * Architecture:
+ *
+ *   Finmate primitive tokens
+ *          ↓
+ *   Finmate semantic tokens
+ *          ↓
+ *   shadcn semantic tokens
+ *          ↓
+ *   Tailwind / shadcn components
+ *
+ * Rules:
+ *
+ * 1. Components should use semantic tokens.
+ * 2. Avoid hard-coded colors in application components.
+ * 3. shadcn variable names remain stable for compatibility.
+ * 4. Finmate variables are the source of truth.
+ */
+
+
+/* ============================================================
+ * 1. TAILWIND THEME
+ * ============================================================ */
+
 @theme inline {
+  /* ----------------------------------------------------------
+   * Core colors
+   * ---------------------------------------------------------- */
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
+
   --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* ----------------------------------------------------------
+   * Finmate tokens
+   *
+   * Exposes the design-system tokens as Tailwind utilities, for
+   * example: bg-fm-background, text-fm-text-primary, and
+   * hover:bg-fm-primary-hover.
+   * ---------------------------------------------------------- */
+
+  /* Primitive palette */
+  --color-fm-blue-50: var(--fm-blue-50);
+  --color-fm-blue-100: var(--fm-blue-100);
+  --color-fm-blue-200: var(--fm-blue-200);
+  --color-fm-blue-500: var(--fm-blue-500);
+  --color-fm-blue-600: var(--fm-blue-600);
+  --color-fm-blue-700: var(--fm-blue-700);
+  --color-fm-blue-900: var(--fm-blue-900);
+
+  --color-fm-slate-50: var(--fm-slate-50);
+  --color-fm-slate-100: var(--fm-slate-100);
+  --color-fm-slate-200: var(--fm-slate-200);
+  --color-fm-slate-300: var(--fm-slate-300);
+  --color-fm-slate-400: var(--fm-slate-400);
+  --color-fm-slate-500: var(--fm-slate-500);
+  --color-fm-slate-600: var(--fm-slate-600);
+  --color-fm-slate-700: var(--fm-slate-700);
+  --color-fm-slate-800: var(--fm-slate-800);
+  --color-fm-slate-900: var(--fm-slate-900);
+  --color-fm-white: var(--fm-white);
+
+  --color-fm-red-500: var(--fm-red-500);
+  --color-fm-red-600: var(--fm-red-600);
+  --color-fm-red-700: var(--fm-red-700);
+
+  /* Semantic colors */
+  --color-fm-background: var(--fm-background);
+  --color-fm-surface: var(--fm-surface);
+  --color-fm-surface-muted: var(--fm-surface-muted);
+  --color-fm-surface-subtle: var(--fm-surface-subtle);
+
+  --color-fm-text-primary: var(--fm-text-primary);
+  --color-fm-text-secondary: var(--fm-text-secondary);
+  --color-fm-text-muted: var(--fm-text-muted);
+
+  --color-fm-primary: var(--fm-primary);
+  --color-fm-primary-hover: var(--fm-primary-hover);
+  --color-fm-primary-strong: var(--fm-primary-strong);
+  --color-fm-primary-soft: var(--fm-primary-soft);
+  --color-fm-primary-on: var(--fm-primary-on);
+
+  --color-fm-border: var(--fm-border);
+  --color-fm-border-subtle: var(--fm-border-subtle);
+  --color-fm-input: var(--fm-input);
+  --color-fm-input-background: var(--fm-input-background);
+  --color-fm-focus: var(--fm-focus);
+
+  --color-fm-error: var(--fm-error);
+  --color-fm-error-hover: var(--fm-error-hover);
+  --color-fm-error-soft: var(--fm-error-soft);
+  --color-fm-error-on: var(--fm-error-on);
+
+  /* ----------------------------------------------------------
+   * Typography
+   * ---------------------------------------------------------- */
+
+  /*
+   * --font-inter should come from next/font.
+   * Fallback keeps the app usable if Inter is not configured yet.
+   */
+  --font-sans: var(--font-inter, ui-sans-serif, system-ui, sans-serif);
+  --font-heading: var(--font-sans);
+  --font-mono: var(--font-geist-mono, ui-monospace, monospace);
+
+  /* ----------------------------------------------------------
+   * Sidebar
+   * ---------------------------------------------------------- */
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ----------------------------------------------------------
+   * Charts
+   * ---------------------------------------------------------- */
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* ----------------------------------------------------------
+   * Radius
+   * ---------------------------------------------------------- */
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -46,85 +171,349 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Finmate shape, spacing, and elevation */
+  --radius-fm-sm: var(--fm-radius-sm);
+  --radius-fm-md: var(--fm-radius-md);
+  --radius-fm-lg: var(--fm-radius-lg);
+  --radius-fm-xl: var(--fm-radius-xl);
+  --radius-fm-full: var(--fm-radius-full);
+
+  --spacing-fm-1: var(--fm-space-1);
+  --spacing-fm-2: var(--fm-space-2);
+  --spacing-fm-3: var(--fm-space-3);
+  --spacing-fm-4: var(--fm-space-4);
+  --spacing-fm-6: var(--fm-space-6);
+  --spacing-fm-8: var(--fm-space-8);
+  --spacing-fm-12: var(--fm-space-12);
+
+  --shadow-fm-card: var(--fm-shadow-card);
 }
+
+
+/* ============================================================
+ * 2. FINMATE TOKENS
+ * ============================================================ */
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* ----------------------------------------------------------
+   * 2.1 Primitive brand colors
+   * ---------------------------------------------------------- */
+
+  --fm-blue-50: #eff6ff;
+  --fm-blue-100: #dbeafe;
+  --fm-blue-200: #bfdbfe;
+  --fm-blue-500: #3b82f6;
+  --fm-blue-600: #2563eb;
+  --fm-blue-700: #1d4ed8;
+  --fm-blue-900: #1e3a8a;
+
+  /* ----------------------------------------------------------
+   * 2.2 Primitive neutral colors
+   * ---------------------------------------------------------- */
+
+  --fm-slate-50: #f8fafc;
+  --fm-slate-100: #f1f5f9;
+  --fm-slate-200: #e2e8f0;
+  --fm-slate-300: #cbd5e1;
+  --fm-slate-400: #94a3b8;
+  --fm-slate-500: #64748b;
+  --fm-slate-600: #475569;
+  --fm-slate-700: #334155;
+  --fm-slate-800: #1e293b;
+  --fm-slate-900: #0f172a;
+
+  --fm-white: #ffffff;
+
+  /* ----------------------------------------------------------
+   * 2.3 Primitive feedback colors
+   * ---------------------------------------------------------- */
+
+  --fm-red-500: #ef4444;
+  --fm-red-600: #dc2626;
+  --fm-red-700: #b91c1c;
+
+  /* ----------------------------------------------------------
+   * 2.4 Semantic surfaces
+   * ---------------------------------------------------------- */
+
+  --fm-background: var(--fm-slate-50);
+  --fm-surface: var(--fm-white);
+  --fm-surface-muted: var(--fm-slate-100);
+  --fm-surface-subtle: var(--fm-slate-200);
+
+  /* ----------------------------------------------------------
+   * 2.5 Semantic text
+   * ---------------------------------------------------------- */
+
+  --fm-text-primary: var(--fm-slate-900);
+  --fm-text-secondary: var(--fm-slate-600);
+  --fm-text-muted: var(--fm-slate-500);
+
+  /* ----------------------------------------------------------
+   * 2.6 Semantic brand
+   *
+   * Finmate brand = #3B82F6
+   * Hover = #2563EB
+   * Strong/pressed = #1D4ED8
+   * ---------------------------------------------------------- */
+
+  --fm-primary: var(--fm-blue-500);
+  --fm-primary-hover: var(--fm-blue-600);
+  --fm-primary-strong: var(--fm-blue-700);
+  --fm-primary-soft: var(--fm-blue-100);
+  --fm-primary-on: var(--fm-white);
+
+  /* ----------------------------------------------------------
+   * 2.7 Semantic borders and inputs
+   * ---------------------------------------------------------- */
+
+  --fm-border: var(--fm-slate-300);
+  --fm-border-subtle: var(--fm-slate-200);
+
+  --fm-input: var(--fm-slate-300);
+  --fm-input-background: var(--fm-slate-100);
+
+  /* ----------------------------------------------------------
+   * 2.8 Focus
+   * ---------------------------------------------------------- */
+
+  --fm-focus: var(--fm-blue-500);
+
+  /* ----------------------------------------------------------
+   * 2.9 Feedback
+   * ---------------------------------------------------------- */
+
+  --fm-error: var(--fm-red-600);
+  --fm-error-hover: var(--fm-red-700);
+  --fm-error-soft: #fee2e2;
+  --fm-error-on: var(--fm-white);
+
+  /* ----------------------------------------------------------
+   * 2.10 Shape
+   * ---------------------------------------------------------- */
+
+  --fm-radius-sm: 4px;
+  --fm-radius-md: 8px;
+  --fm-radius-lg: 12px;
+  --fm-radius-xl: 16px;
+  --fm-radius-full: 9999px;
+
+  /*
+   * shadcn base radius.
+   * Existing shadcn components continue to work.
+   */
+  --radius: var(--fm-radius-md);
+
+  /* ----------------------------------------------------------
+   * 2.11 Spacing
+   * ---------------------------------------------------------- */
+
+  --fm-space-1: 4px;
+  --fm-space-2: 8px;
+  --fm-space-3: 12px;
+  --fm-space-4: 16px;
+  --fm-space-6: 24px;
+  --fm-space-8: 32px;
+  --fm-space-12: 48px;
+
+  /* ----------------------------------------------------------
+   * 2.12 Elevation
+   * ---------------------------------------------------------- */
+
+  --fm-shadow-card: 0 10px 25px -5px rgb(0 0 0 / 5%);
+
+  /* ==========================================================
+   * 2.13 SHADCN SEMANTIC MAPPING
+   *
+   * These names intentionally remain compatible with shadcn.
+   * ========================================================== */
+
+  /* Surfaces */
+  --background: var(--fm-background);
+  --foreground: var(--fm-text-primary);
+
+  --card: var(--fm-surface);
+  --card-foreground: var(--fm-text-primary);
+
+  --popover: var(--fm-surface);
+  --popover-foreground: var(--fm-text-primary);
+
+  /* Primary */
+  --primary: var(--fm-primary);
+  --primary-foreground: var(--fm-primary-on);
+
+  /* Secondary */
+  --secondary: var(--fm-surface-muted);
+  --secondary-foreground: var(--fm-text-primary);
+
+  /* Muted */
+  --muted: var(--fm-surface-muted);
+  --muted-foreground: var(--fm-text-secondary);
+
+  /* Accent */
+  --accent: var(--fm-primary-soft);
+  --accent-foreground: var(--fm-primary-strong);
+
+  /* Feedback */
+  --destructive: var(--fm-error);
+  --destructive-foreground: var(--fm-error-on);
+
+  /* Structure */
+  --border: var(--fm-border-subtle);
+  --input: var(--fm-input);
+  --ring: var(--fm-focus);
+
+  /* ==========================================================
+   * 2.14 SIDEBAR
+   * ========================================================== */
+
+  --sidebar: var(--fm-surface);
+  --sidebar-foreground: var(--fm-text-primary);
+
+  --sidebar-primary: var(--fm-primary);
+  --sidebar-primary-foreground: var(--fm-primary-on);
+
+  --sidebar-accent: var(--fm-surface-muted);
+  --sidebar-accent-foreground: var(--fm-text-primary);
+
+  --sidebar-border: var(--fm-border-subtle);
+  --sidebar-ring: var(--fm-focus);
+
+  /* ==========================================================
+   * 2.15 CHARTS
+   * ========================================================== */
+
+  /*
+   * Keep these available for shadcn chart components.
+   * The Finmate chart palette can be refined later when
+   * dashboard/data-visualization work starts.
+   */
+
+  --chart-1: oklch(0.646 0.222 264.376);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
 }
 
+
+/* ============================================================
+ * 3. DARK MODE
+ * ============================================================
+ *
+ * Components do not change.
+ * Only Finmate semantic tokens change.
+ *
+ * shadcn variables automatically inherit these values.
+ */
+
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* ----------------------------------------------------------
+   * Surfaces
+   * ---------------------------------------------------------- */
+
+  --fm-background: #0f172a;
+  --fm-surface: #111827;
+  --fm-surface-muted: #1e293b;
+  --fm-surface-subtle: #334155;
+
+  /* ----------------------------------------------------------
+   * Text
+   * ---------------------------------------------------------- */
+
+  --fm-text-primary: #f8fafc;
+  --fm-text-secondary: #cbd5e1;
+  --fm-text-muted: #94a3b8;
+
+  /* ----------------------------------------------------------
+   * Brand
+   * ---------------------------------------------------------- */
+
+  --fm-primary: #60a5fa;
+  --fm-primary-hover: #93c5fd;
+  --fm-primary-strong: #bfdbfe;
+  --fm-primary-soft: #1e3a8a;
+  --fm-primary-on: #0f172a;
+
+  /* ----------------------------------------------------------
+   * Borders / inputs
+   * ---------------------------------------------------------- */
+
+  --fm-border: #475569;
+  --fm-border-subtle: #334155;
+
+  --fm-input: #475569;
+  --fm-input-background: #1e293b;
+
+  /* ----------------------------------------------------------
+   * Focus
+   * ---------------------------------------------------------- */
+
+  --fm-focus: #60a5fa;
+
+  /* ----------------------------------------------------------
+   * Feedback
+   * ---------------------------------------------------------- */
+
+  --fm-error: #f87171;
+  --fm-error-hover: #fca5a5;
+  --fm-error-soft: #450a0a;
+  --fm-error-on: #ffffff;
+
+  /* ----------------------------------------------------------
+   * Sidebar
+   * ---------------------------------------------------------- */
+
+  --sidebar: var(--fm-surface);
+  --sidebar-foreground: var(--fm-text-primary);
+
+  --sidebar-primary: var(--fm-primary);
+  --sidebar-primary-foreground: var(--fm-primary-on);
+
+  --sidebar-accent: var(--fm-surface-muted);
+  --sidebar-accent-foreground: var(--fm-text-primary);
+
+  --sidebar-border: var(--fm-border-subtle);
+  --sidebar-ring: var(--fm-focus);
+
+  /* ----------------------------------------------------------
+   * Charts
+   * ---------------------------------------------------------- */
+
+  --chart-1: oklch(0.7 0.18 264.376);
+  --chart-2: oklch(0.65 0.12 184.704);
+  --chart-3: oklch(0.55 0.09 227.392);
+  --chart-4: oklch(0.78 0.16 84.429);
+  --chart-5: oklch(0.75 0.16 70.08);
 }
+
+
+/* ============================================================
+ * 4. BASE STYLES
+ * ============================================================ */
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
+  html {
+    @apply font-sans;
+  }
+
   body {
     @apply bg-background text-foreground;
   }
-  html {
-    @apply font-sans;
+}
+
+
+/* ============================================================
+ * 5. FINMATE UTILITIES
+ * ============================================================ */
+
+@layer utilities {
+  .shadow-fm-card {
+    box-shadow: var(--fm-shadow-card);
   }
 }
