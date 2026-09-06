@@ -35,6 +35,9 @@ export default function Login() {
     },
   });
 
+  const { isSubmitting } = form.formState;
+
+
   async function onSubmit(data: z.infer<typeof authSchema>) {
     const supabase = createClient();
 
@@ -42,13 +45,15 @@ export default function Login() {
       email: data.email,
       password: data.password,
     });
+    console.log(error, "error");
+    console.log(error?.message, "error?.message");
     if (error) {
-      toast.error(error?.message || "Error logging in!");
-    } else {
-      toast.success("Login successful!");
-      router.replace("/dashboard");
-    }
-    form.reset();
+    toast.error(error?.message || "Error logging in!");
+    form.setValue("password", ""); 
+  } else {
+    toast.success("Login successful!");
+    router.replace("/dashboard");
+  }
   }
 
   return (
@@ -112,8 +117,8 @@ export default function Login() {
         </form>
       </CardContent>
         <Field orientation="horizontal" className="flex items-center justify-center w-full">
-          <Button type="submit" form="login-form" className="w-full">
-            Signin
+          <Button type="submit" form="login-form" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? "Signing in..." : "Signin"}
           </Button>
         </Field>
         <p className="text-fm-slate-600 text-sm text-center">
