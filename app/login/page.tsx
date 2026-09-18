@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { authSchema } from "@/schema/authSchema";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "@/components/password-input";
 
 export default function Login() {
   const router = useRouter();
@@ -99,14 +100,13 @@ export default function Login() {
                   <FieldLabel htmlFor="login-form-password" className="text-fm-slate-600 text-sm">
                     Password
                   </FieldLabel>
-                  <Input
+                  <PasswordInput
                     {...field}
                     id="login-form-password"
                     aria-invalid={fieldState.invalid}
                     placeholder="your password"
-                    type="password"
                     autoComplete="current-password"
-                  />
+                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}

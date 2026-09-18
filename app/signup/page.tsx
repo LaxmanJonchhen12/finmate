@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input"
 import {authSchema} from "@/schema/authSchema";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "@/components/password-input"
 
 export default function Signup() {
   const router = useRouter();
@@ -94,14 +95,13 @@ export default function Signup() {
                   <FieldLabel htmlFor="form-rhf-demo-password">
                     Password
                   </FieldLabel>
-                  <Input
+                  <PasswordInput
                     {...field}
                     id="form-rhf-demo-password"
                     aria-invalid={fieldState.invalid}
-                    placeholder="••••••••"
-                    type="password"
+                    placeholder="your password"
                     autoComplete="current-password"
-                  />
+                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
