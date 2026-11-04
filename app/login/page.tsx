@@ -46,8 +46,6 @@ export default function Login() {
       email: data.email,
       password: data.password,
     });
-    console.log(error, "error");
-    console.log(error?.message, "error?.message");
     if (error) {
     toast.error(error?.message || "Error logging in!");
     form.setValue("password", ""); 

@@ -38,7 +38,6 @@ export default function Signup() {
   })
 
   async   function onSubmit(data: z.infer<typeof authSchema>) {
-    console.log(data, "signup data");
         const supabase = createClient();
 
     const { data: signUpData, error } = await supabase.auth.signUp({
@@ -50,8 +49,8 @@ export default function Signup() {
     } else {
       toast.success("Signup successful!");
       router.replace("/login");
+          form.reset();
     }
-    form.reset();
   }
 
   return (
@@ -100,7 +99,7 @@ export default function Signup() {
                     id="form-rhf-demo-password"
                     aria-invalid={fieldState.invalid}
                     placeholder="your password"
-                    autoComplete="current-password"
+                    autoComplete="new-password"
                    />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />

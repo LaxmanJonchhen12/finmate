@@ -19,12 +19,12 @@ import {
 } from "@/components/ui/select";
 import { useTransactionSummary } from "../features/transactions/hooks/useTransactionSummary";
 import TransactionSummary from "../features/transactions/components/TransactionSummary";
+import LogoutButton from "@/components/logout-button";
 
 export default function Home() {
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
   const [filter, setFilter] = useState("");
-  console.log(filter, "filter");
   const [openTransactionForm, setOpenTransactionForm] = useState(false);
 
   const { data, isLoading, error } = useQuery({
@@ -63,6 +63,7 @@ const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
   return (
     <main>
+      <LogoutButton />
       <h1>Transactions</h1>
 
       <TransactionSummary
